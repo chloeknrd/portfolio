@@ -13,7 +13,7 @@ ls<!DOCTYPE HTML>
 		<style>
 			details pre{
 				background.color: #000 !important;
-				color: #0f0 !important;
+				color: #22863a !important;
 				padding: 10px;
 				border-radius: 8px;
 				overflow-y: auto;
@@ -120,13 +120,41 @@ while True:
 							<body>
 								<h3>YouTube Transkripte</h3>
 								<p>Die Transkripte stellen den elementaren Teil der Daten dar, und mit der Liste an IDs der Videos ist der nächste Scraping-Ansatz simpler. Dennoch bleiben weitere Probleme: Manche Videos besitzen kein Transkript, weswegen sie nciht nur für die Analyse ungeeignet sind, sondern auch bei der Verwendung der Batch-Scraping Funktion einen Error auslösen.</br>Somit muss eine weitere Schleife aufgestellt werden, die die Funktion verwendet, nur für ein Video die Transkripte zu sammeln. Mit einem "try-except"-Ansatz werden Videos ohne Transkripte mit "NaN" markiert und in beiden Fällen mit der ID in einem Tupel an eine Liste angehangen und später auch in ein DataFrame konvertiert.</br>Zuletzt fehlt noch die Bereinigung der Daten, da die Ergebnisse mit zusätzlicher Formattierung kommen, z.B. Start- und Endzeitpunkt des jeweligen Satzes. Da diese Informationen in einem Dictionary mit Keys gespeichert sind, werden diese mit einer Schleife erneut gefiltert und mit der Video-ID als Tupel in einer Liste , und dann in einem DataFrame gespeichert.</p>
+																<details>
+									<summary>Code Beispiel</summary>
+									<pre><code>
+video_list = yt_data['vid_id'].to_list()
+list_capt = []
+
+for i in range(len(video_list)):
+    try:
+        req_cap = YouTubeTranscriptApi.get_transcript(video_id=video_list[i], languages=['de'])
+    except:
+        req_cap = float("nan")
+    req_tuple = (video_list[i], req_cap)
+    list_capt.append(req_tuple)
+    print(i)
+cap_df = pd.DataFrame(list_capt, columns=['Vid_Id', 'Trans'])
+
+cap_df_clean = cap_df.dropna()
+cap_df_clean = cap_df_clean.reset_index(drop=True)
+k = 'text'
+trans_list = []
+for i in range(len(cap_df_clean.loc[:,'Trans'])):
+    res = [d.get(k) for d in cap_df_clean.loc[i,'Trans'] if k in d]
+    res = ' '.join(res)
+    res_tup = (cap_df_clean.loc[i, 'Vid_Id'], res)
+    trans_list.append(res_tup)
+script_df = pd.DataFrame(trans_list, columns=['Vid_Id', 'Trans'])
+									</code></pre>
+								</details>
 							</body>	
 						</div>
 					</section>
 
 				<!-- Three -->
 					<section id="three">
-						<h2>Abschluss</h2>
+						<h2>Get in Touch</h2>
 						<p>Vielen Dank für den Besuch meiner Portfolio-Webseite und dem Interesse an meiner Personalie. Diese Webseite befindet sich noch im Aufbau und somit sind mögliche Änderungen vorbehalten. Bei Interesse können Sie mich gerne erreichen unter</br></p>
 							<div class="col-4 col-12-small">
 								<ul class="labeled-icons">
