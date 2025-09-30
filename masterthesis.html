@@ -17,7 +17,7 @@
 			<header id="header">
 				<div class="inner">
 					<a href="index.html" class="image avatar"><img src="images/profilepic.jpg" alt="" /></a>
-					<h2>Hallo.</br>Mein Name ist Chloe Konrad, Master-Absolventin in Computational Social Science, einer Mischung aus Informatik, Gesellschaftwissenschaften und Data Science.</br>Mein Fokus liegt auf der Analyse großer Datenmengen mittels Statistik, Machine Learning und Text Mining</h2>
+					<h5>Hallo.</br>Mein Name ist Chloe Konrad, Master-Absolventin in Computational Social Science, einer Mischung aus Informatik, Gesellschaftwissenschaften und Data Science.</br>Mein Fokus liegt auf der Analyse großer Datenmengen mittels Statistik, Machine Learning und Text Mining</h5>
 				</div>
 			</header>
 
@@ -74,8 +74,8 @@ while True:
             q = query,
             maxResults = 50,
             fields = "nextPageToken, pageInfo.totalResults,
-										items(id(videoId),
-										snippet(publishedAt, channelId, channelTitle, title, description))"
+						items(id(videoId),
+						snippet(publishedAt, channelId, channelTitle, title, description))"
         ).execute()    
 
     for i in range(len(request['items'])):
@@ -104,6 +104,8 @@ while True:
         break
 									</code></pre>
 								</details>
+								<h3>YouTube Transkripte</h3>
+								<p>Die Transkripte stellen den elementaren Teil der Daten dar, und mit der Liste an IDs der Videos ist der nächste Scraping-Ansatz simpler. Dennoch bleiben weitere Probleme: Manche Videos besitzen kein Transkript, weswegen sie nciht nur für die Analyse ungeeignet sind, sondern auch bei der Verwendung der Batch-Scraping Funktion einen Error auslösen.</br>Somit muss eine weitere Schleife aufgestellt werden, die die Funktion verwendet, nur für ein Video die Transkripte zu sammeln. Mit einem "try-except"-Ansatz werden Videos ohne Transkripte mit "NaN" markiert und in beiden Fällen mit der ID in einem Tupel an eine Liste angehangen und später auch in ein DataFrame konvertiert.</p>
 							</body>	
 						</div>
 					</section>
