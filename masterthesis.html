@@ -27,49 +27,21 @@
 				<!-- One -->
 					<section id="one">
 						<header class="major">
-							<h2>Chloe Konrad</h2>
+							<h2>Masterthesis: Fridays for Future und YouTube</h2>
 						</header>
 						<p>Innerhalb meiner Masterthesis habe ich die Bewegung „Fridays for Future“ (FFF) auf der Plattform YouTube im Laufe der Zeit und im Vergleich zu anderen Protestbewegungen analysiert. Hierzu habe ich zuerst via der YouTube-API auf Basis einer Query eine Liste von den relevanten YouTube Videos per ID inklusive ersten Metadaten gesammelt.</br>Auf Basis der Liste an IDs habe ich die Transkripte der Videos gesammelt, aufbereitet und in einer Datenbank abgespeichert. Zusätzlich habe ich die Kategorie der jeweiligen Kanäle gesammelt, um sowohl die Themenverteilung über Zeit als auch über Kanalkategorien analysieren zu können.</br>Innerhalb der Analyse habe ich BERTopic basiertes Topic Modelling betrieben: Zuerst habe ich die Topics selbst generiert, um dann die Nähe der jeweiligen Topics zu bestimmen, um Clusters zu identifizieren. Diese Cluster habe ich dann bzgl. Veränderung der Verteilung über Zeit und Kanalkategorien analysiert.</br>Die Ergebnisse zeigen, wie die Bewegung die Themenbreite an Videos über Umwelt und Klimawandel reduzierte und die Aufmerksamkeit sich auf die Bewegung selbst verschoben hat. Dennoch zeigt die große Bandbreite an Topics vor FFF, dass ein Grundinteresse und eine geteilte Wissensbasis bestand und somit die Grundlage für die Forderungen der Bewegung.</p>
 					</section>
 
 				<!-- Two -->
 					<section id="two">
-						<h2>More about me</h2>
+						<h2>Data Scraping und Management</h2>
 						<div class="row">
 							<article class="col-6 col-12-xsmall work-item">
 								<a href="masterthesis.html"><img src="images/thumbs/01.jpg" alt="" /></a>
-								<h3>Masterthesis</h3>
-								<p>Meine Abschlussarbeit für meinen Master in Computational Social Science. </p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://chloeknrd.github.io/VisSem-Project/"><img src="images/thumbs/Frauenherzen.jpg" alt="" /></a>
-								<h3>Frauenherzen</h3>
-								<p>Eine Webseite im Rahmen der Veranstaltung "Datenvisualisierung in Zeiten der Polarisierung."</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/03.jpg" class="image fit thumb"><img src="images/thumbs/03.jpg" alt="" /></a>
-								<h3>Tortor metus commodo</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/04.jpg" class="image fit thumb"><img src="images/thumbs/04.jpg" alt="" /></a>
-								<h3>Quam neque phasellus</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/05.jpg" class="image fit thumb"><img src="images/thumbs/05.jpg" alt="" /></a>
-								<h3>Nunc enim commodo aliquet</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="images/fulls/06.jpg" class="image fit thumb"><img src="images/thumbs/06.jpg" alt="" /></a>
-								<h3>Risus ornare lacinia</h3>
-								<p>Lorem ipsum dolor sit amet nisl sed nullam feugiat.</p>
+								<h3>YouTube API</h3>
+								<p>Der Data Scraping Process ist aufgeteilt in drei Schritte: Sammeln der relevanten IDs an Videos und YouTube-Kanälen, zusammen mit ersten Metadaten von Videos. Der zweite Schritt ist das Sammeln an Transkripten via der IDs von YouTube-Videos, da die IDs als Primärschlüssel agieren:</br>Die Transkripte werden auch durch die YouTube-API gesammelt, benötigen jedoch wegen der Struktur der Ergebnisse notwendige Schritte zur Bereinigung:</br>Manche Videos besitzen keine Untertitel und somit keine Transkripte, weswegen ein "try-except" Ansatz notwendig ist, um keinen Fehler zu generieren. Weitere Aspekte sind wie der Start- und Endzeitpunkt sowie die generelle Aufteilung der einzelnen Abschnitte in einzelne Items in einem Dictionary.</p>
 							</article>
 						</div>
-						<ul class="actions">
-							<li><a href="#" class="button">Full Portfolio</a></li>
-						</ul>
 					</section>
 
 				<!-- Three -->
