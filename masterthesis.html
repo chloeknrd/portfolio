@@ -44,6 +44,62 @@
 								<p>Der Data Scraping Process ist aufgeteilt in drei Schritte:</br> - Sammeln der relevanten IDs an Videos und YouTube-Kanälen, zusammen mit ersten Metadaten von Videos.</br> - Sammeln an Transkripten via der IDs von YouTube-Videos</br> - Sammeln der Kategorien der jeweiligen YouTube-Kanälen</p>
 								<h4>Video- und Kanal-IDs</h4>
 								<p>YouTubes API hat im Vergleich zu anderen APIs wie von der New York Times oder vom Guardian eine andere Architektur und Aufbau. Der größte Unterschied, der auch einen anderen Ansatz notwendig macht, ist der unterschiedliche Ansatz bzgl. Pagination. Während die anderen besagten APIs maximale Seitanzahlen verwenden, um auf weitere Seiten an Suchergebnissen zu verweisen, verwendet die YouTube-API Tokens, die auf die darauf folgende Seite verweisen. Dadurch muss auch die Automatisierung anders aufgestellt werden, da eine Iteration über die Seitenzahlen nicht möglich ist.</br>Durch die Limitation eines Zeitraums ist es möglich, eine Endlosschleife aufzusetzen, bis der Endpunkt erreicht worden ist. Die Ergebnisse der Query werden zuerst in einem Dictionary gespeichert und dann umformatiert in einen gesonderten Pandas DataFrame. Besagter DataFrame wird an den großen DataFrame angehangen, in welchem alle Scraping-Ergebnisse dieser automatisierten Query gespeichert sind.</p>
+								<details>
+									<summary>Code Beispiel</summary>
+									<pre><code>
+										while True:
+    if next_token:
+        if date_begin >= date_split:
+            query = "klimawandel|fridays for future|umweltschutz|greta thunberg"
+        request = youtube.search().list(
+            part="id, snippet",
+            type = "video",
+            publishedAfter = convert_date_begin(date_str=date_begin),
+            publishedBefore = convert_date_end(date_str=date_end),
+            relevanceLanguage = 'de',
+            q = query,
+            maxResults = 50,
+            fields = "nextPageToken, items(id(videoId), snippet(publishedAt, channelId, channelTitle, title, description))",
+            pageToken = next_token
+        ).execute()
+    else:
+        request = youtube.search().list(
+            part="id, snippet",
+            type = "video",
+            publishedAfter = convert_date_begin(date_str=date_begin),
+            publishedBefore = convert_date_end(date_str=date_end),
+            relevanceLanguage = 'de',
+            q = query,
+            maxResults = 50,
+            fields = "nextPageToken, pageInfo.totalResults, items(id(videoId), snippet(publishedAt, channelId, channelTitle, title, description))"
+        ).execute()    
+
+    for i in range(len(request['items'])):
+
+        vid_id = request['items'][i]['id']['videoId']
+        Publish_Date = request['items'][i]['snippet']['publishedAt']
+        Channel_ID = request['items'][i]['snippet']['channelId']
+        Title = request['items'][i]['snippet']['title']
+        Description = request['items'][i]['snippet']['description']
+        Channel_Title = request['items'][i]['snippet']['channelTitle']
+        video_response['vid_id'].append(vid_id)
+        video_response['Publish_date'].append(Publish_Date)
+        video_response['Channel_ID'].append(Channel_ID)
+        video_response['Title'].append(Title)
+        video_response['Description'].append(Description)
+        video_response['Channel_Title'].append(Channel_Title)
+    
+    if 'nextPageToken' in request:
+        next_token = request['nextPageToken']
+    else:
+        date_begin = date_begin + timedelta(days=7)
+        date_end = date_end + timedelta(days=7)
+        next_token = ""
+
+    if date_begin > date_finish:
+        break
+									</code></pre>
+								</details>
 							</body>	
 						</div>
 					</section>
