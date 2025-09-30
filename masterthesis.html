@@ -114,8 +114,9 @@ while True:
         break
 									</code></pre>
 								</details>
-								<p></br></p>
 							</body>
+						</div>
+						<div class="row">
 							<body>
 								<h3>YouTube Transkripte</h3>
 								<p>Die Transkripte stellen den elementaren Teil der Daten dar, und mit der Liste an IDs der Videos ist der nächste Scraping-Ansatz simpler. Dennoch bleiben weitere Probleme: Manche Videos besitzen kein Transkript, weswegen sie nciht nur für die Analyse ungeeignet sind, sondern auch bei der Verwendung der Batch-Scraping Funktion einen Error auslösen.</br>Somit muss eine weitere Schleife aufgestellt werden, die die Funktion verwendet, nur für ein Video die Transkripte zu sammeln. Mit einem "try-except"-Ansatz werden Videos ohne Transkripte mit "NaN" markiert und in beiden Fällen mit der ID in einem Tupel an eine Liste angehangen und später auch in ein DataFrame konvertiert.</br>Zuletzt fehlt noch die Bereinigung der Daten, da die Ergebnisse mit zusätzlicher Formattierung kommen, z.B. Start- und Endzeitpunkt des jeweligen Satzes. Da diese Informationen in einem Dictionary mit Keys gespeichert sind, werden diese mit einer Schleife erneut gefiltert und mit der Video-ID als Tupel in einer Liste , und dann in einem DataFrame gespeichert.</p>
