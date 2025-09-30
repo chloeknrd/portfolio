@@ -47,7 +47,7 @@
 								<details>
 									<summary>Code Beispiel</summary>
 									<pre><code>
-										while True:
+while True:
     if next_token:
         if date_begin >= date_split:
             query = "klimawandel|fridays for future|umweltschutz|greta thunberg"
@@ -59,7 +59,9 @@
             relevanceLanguage = 'de',
             q = query,
             maxResults = 50,
-            fields = "nextPageToken, items(id(videoId), snippet(publishedAt, channelId, channelTitle, title, description))",
+            fields = "nextPageToken,
+						items(id(videoId),
+						snippet(publishedAt, channelId, channelTitle, title, description))",
             pageToken = next_token
         ).execute()
     else:
@@ -71,7 +73,9 @@
             relevanceLanguage = 'de',
             q = query,
             maxResults = 50,
-            fields = "nextPageToken, pageInfo.totalResults, items(id(videoId), snippet(publishedAt, channelId, channelTitle, title, description))"
+            fields = "nextPageToken, pageInfo.totalResults,
+										items(id(videoId),
+										snippet(publishedAt, channelId, channelTitle, title, description))"
         ).execute()    
 
     for i in range(len(request['items'])):
