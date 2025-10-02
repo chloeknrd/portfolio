@@ -162,9 +162,25 @@ script_df = pd.DataFrame(trans_list, columns=['Vid_Id', 'Trans'])
 							</body>
 						</div>
 					</section>
+					<section id="four">
+						<div class="row">
+							<body>
+								<h3>Analyse</h3>
+								<p>Die Daten sind auf Basis des Konzeptes von Datenbank-Normalformen noch in unterschiedlichen DataFrames. Somit müssen die relevanten Spalten der jeweiligen DataFrames in einen neuen DataFrame kombiniert werden via der Video-ID mittels eines Inner-Joins. Somit sind drei Spalten an Daten vorhanden: Video-IDs, Datum der Veröffentlichung, Transkript.</br>Weitere Schritte vor dem eigentlichen Topic Modelling beinhaltet das Aufsetzen der notwendigen Parameter. Dies beinhaltet das Aufsetzen einer Liste an Stoppwörtern, um häufige Wörter ohne inhaltliche Relevanz zu entfernen. Weiter sind die Parameter für das Festlegen eines Seeds für die Reproduktion der Ergebnisse, der Ähnlichkeit der Wörter für Schlüsselbegriffe, und die Verwendung von c-TF-IDF für verbesserte Topic-Repräsentation</p>
+							</body>
+						</div>
+					</section>
+					<section id="five">
+						<div class="row">
+							<body>
+								<h3>Topic Modeling über Zeit</h3>
+								<p>Für die Analyse findet das BERTopic-Modul Verwendung. BERTopic bietet einen Topic Modelling-Ansatz auf Basis von LLM-Transformertechnik und somit eine Verbesserung gegenüber anderen Asätzen für Topic Modelling wie Latent Dirichilet Allocation. Diese Analyse ist auch in drei große Schritte eingeteilt:</br> - Topic Modeling und Themencluster</br> - Topic-Verteilung über Zeit</br> - Topic-Verteilung über Kanalkategorien</p>
+							</body>
+						</div>
+					</section>				
 
 				<!-- Three -->
-					<section id="four">
+					<section id="six">
 						<h2>Get in Touch</h2>
 						<p>Vielen Dank für den Besuch meiner Portfolio-Webseite und dem Interesse an meiner Personalie. Diese Webseite befindet sich noch im Aufbau und somit sind mögliche Änderungen vorbehalten. Bei Interesse können Sie mich gerne erreichen unter</br></p>
 							<div class="col-4 col-12-small">
