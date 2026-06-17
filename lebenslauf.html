@@ -24,30 +24,130 @@
 		<!-- Main -->
 			<div id="main">
 
+		
+		<!-- Main -->
+			<div id="main">
+
 				<!-- One -->
 					<section id="one">
 						<header class="major">
-							<h2>Lebenslauf</h2>
+							<h2>Masterthesis: Fridays for Future und YouTube</h2>
 						</header>
-						<p>Computational Social Science-Absolventin an der Otto-Friedrich-Universität Bamberg./</p>
+						<p>Innerhalb meiner Masterthesis habe ich die Bewegung „Fridays for Future“ (FFF) auf der Plattform YouTube im Laufe der Zeit und im Vergleich zu anderen Protestbewegungen analysiert. Hierzu habe ich zuerst via der YouTube-API auf Basis einer Query eine Liste von den relevanten YouTube Videos per ID inklusive ersten Metadaten gesammelt.</br>Auf Basis der Liste an IDs habe ich die Transkripte der Videos gesammelt, aufbereitet und in einer Datenbank abgespeichert. Zusätzlich habe ich die Kategorie der jeweiligen Kanäle gesammelt, um sowohl die Themenverteilung über Zeit als auch über Kanalkategorien analysieren zu können.</br>Innerhalb der Analyse habe ich BERTopic basiertes Topic Modelling betrieben: Zuerst habe ich die Topics selbst generiert, um dann die Nähe der jeweiligen Topics zu bestimmen, um Clusters zu identifizieren. Diese Cluster habe ich dann bzgl. Veränderung der Verteilung über Zeit und Kanalkategorien analysiert.</br>Die Ergebnisse zeigen, wie die Bewegung die Themenbreite an Videos über Umwelt und Klimawandel reduzierte und die Aufmerksamkeit sich auf die Bewegung selbst verschoben hat. Dennoch zeigt die große Bandbreite an Topics vor FFF, dass ein Grundinteresse und eine geteilte Wissensbasis bestand und somit die Grundlage für die Forderungen der Bewegung.</p>
+						<ul class="actions">
+							<li><a href="https://github.com/chloeknrd/masterthesis" class="button">Github Repository</a></li>
+						</ul>
 					</section>
 
 				<!-- Two -->
 					<section id="two">
-						<h2>Projekte</h2>
+						<h2>Data Scraping und Management</h2>
 						<div class="row">
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="masterthesis.html"><img src="images/thumbs/01.jpg" alt="" /></a>
-								<h3>Masterthesis</h3>
-								<p>Meine Abschlussarbeit für meinen Master in Computational Social Science. </p>
-							</article>
-							<article class="col-6 col-12-xsmall work-item">
-								<a href="https://chloeknrd.github.io/VisSem-Project/"><img src="images/thumbs/Frauenherzen.jpg" alt="" /></a>
-								<h3>Frauenherzen</h3>
-								<p>Eine Webseite im Rahmen der Veranstaltung "Datenvisualisierung in Zeiten der Polarisierung."</p>
-							</article>
+							<body>
+								<h3>YouTube API</h3>
+								<p>Der Data Scraping Process ist aufgeteilt in drei Schritte:</br> - Sammeln der relevanten IDs an Videos und YouTube-Kanälen, zusammen mit ersten Metadaten von Videos.</br> - Sammeln an Transkripten via der IDs von YouTube-Videos</br> - Sammeln der Kategorien der jeweiligen YouTube-Kanälen</p>
+								<h4>Video- und Kanal-IDs</h4>
+								<p>YouTubes API hat im Vergleich zu anderen APIs wie von der New York Times oder vom Guardian eine andere Architektur und Aufbau. Der größte Unterschied, der auch einen anderen Ansatz notwendig macht, ist der unterschiedliche Ansatz bzgl. Pagination. Während die anderen besagten APIs maximale Seitanzahlen verwenden, um auf weitere Seiten an Suchergebnissen zu verweisen, verwendet die YouTube-API Tokens, die auf die darauf folgende Seite verweisen. Dadurch muss auch die Automatisierung anders aufgestellt werden, da eine Iteration über die Seitenzahlen nicht möglich ist.</br>Durch die Limitation eines Zeitraums ist es möglich, eine Endlosschleife aufzusetzen, bis der Endpunkt erreicht worden ist. Die Ergebnisse der Query werden zuerst in einem Dictionary gespeichert und dann umformatiert in einen gesonderten Pandas DataFrame. Besagter DataFrame wird an den großen DataFrame angehangen, in welchem alle Scraping-Ergebnisse dieser automatisierten Query gespeichert sind.</p>
+								<details>
+									<summary>Code Beispiel</summary>
+									<pre><code>
+while True:
+    if next_token:
+        if date_begin >= date_split:
+            query = "klimawandel|fridays for future|umweltschutz|greta thunberg"
+        request = youtube.search().list(
+            part="id, snippet",
+            type = "video",
+            publishedAfter = convert_date_begin(date_str=date_begin),
+            publishedBefore = convert_date_end(date_str=date_end),
+            relevanceLanguage = 'de',
+            q = query,
+            maxResults = 50,
+            fields = "nextPageToken,
+						items(id(videoId),
+						snippet(publishedAt, channelId, channelTitle, title, description))",
+            pageToken = next_token
+        ).execute()
+    else:
+        request = youtube.search().list(
+            part="id, snippet",
+            type = "video",
+            publishedAfter = convert_date_begin(date_str=date_begin),
+            publishedBefore = convert_date_end(date_str=date_end),
+            relevanceLanguage = 'de',
+            q = query,
+            maxResults = 50,
+            fields = "nextPageToken, pageInfo.totalResults,
+						items(id(videoId),
+						snippet(publishedAt, channelId, channelTitle, title, description))"
+        ).execute()    
+
+    for i in range(len(request['items'])):
+
+        vid_id = request['items'][i]['id']['videoId']
+        Publish_Date = request['items'][i]['snippet']['publishedAt']
+        Channel_ID = request['items'][i]['snippet']['channelId']
+        Title = request['items'][i]['snippet']['title']
+        Description = request['items'][i]['snippet']['description']
+        Channel_Title = request['items'][i]['snippet']['channelTitle']
+        video_response['vid_id'].append(vid_id)
+        video_response['Publish_date'].append(Publish_Date)
+        video_response['Channel_ID'].append(Channel_ID)
+        video_response['Title'].append(Title)
+        video_response['Description'].append(Description)
+        video_response['Channel_Title'].append(Channel_Title)
+    
+    if 'nextPageToken' in request:
+        next_token = request['nextPageToken']
+    else:
+        date_begin = date_begin + timedelta(days=7)
+        date_end = date_end + timedelta(days=7)
+        next_token = ""
+
+    if date_begin > date_finish:
+        break
+									</code></pre>
+								</details>
+							</body>
+						</div>
+						<div class="row">
+							<body>
+								<h3>YouTube Transkripte</h3>
+								<p>Die Transkripte stellen den elementaren Teil der Daten dar, und mit der Liste an IDs der Videos ist der nächste Scraping-Ansatz simpler. Dennoch bleiben weitere Probleme: Manche Videos besitzen kein Transkript, weswegen sie nciht nur für die Analyse ungeeignet sind, sondern auch bei der Verwendung der Batch-Scraping Funktion einen Error auslösen.</br>Somit muss eine weitere Schleife aufgestellt werden, die die Funktion verwendet, nur für ein Video die Transkripte zu sammeln. Mit einem "try-except"-Ansatz werden Videos ohne Transkripte mit "NaN" markiert und in beiden Fällen mit der ID in einem Tupel an eine Liste angehangen und später auch in ein DataFrame konvertiert.</br>Zuletzt fehlt noch die Bereinigung der Daten, da die Ergebnisse mit zusätzlicher Formattierung kommen, z.B. Start- und Endzeitpunkt des jeweligen Satzes. Da diese Informationen in einem Dictionary mit Keys gespeichert sind, werden diese mit einer Schleife erneut gefiltert und mit der Video-ID als Tupel in einer Liste , und dann in einem DataFrame gespeichert.</p>
+							</body>	
 						</div>
 					</section>
+					<section id="three">
+						<header class="major">
+							<h2>Analyse</h2>
+						</header>
+						<div class="row">
+							<body>
+								<h3>Topic Modeling und Themencluster</h3>
+								<p>Für die Analyse findet das BERTopic-Modul Verwendung. BERTopic bietet einen Topic Modelling-Ansatz auf Basis von LLM-Transformertechnik und somit eine Verbesserung gegenüber anderen Asätzen für Topic Modelling wie Latent Dirichilet Allocation. Diese Analyse ist auch in drei große Schritte eingeteilt:</br> - Topic Modeling und Themencluster</br> - Topic-Verteilung über Zeit</br> - Topic-Verteilung über Kanalkategorien</p>
+							</body>
+						</div>
+					</section>
+					<section id="four">
+						<div class="row">
+							<body>
+								<h3>Analyse</h3>
+								<p>Die Daten sind auf Basis des Konzeptes von Datenbank-Normalformen noch in unterschiedlichen DataFrames. Somit müssen die relevanten Spalten der jeweiligen DataFrames in einen neuen DataFrame kombiniert werden via der Video-ID mittels eines Inner-Joins. Somit sind drei Spalten an Daten vorhanden: Video-IDs, Datum der Veröffentlichung, Transkript.</br>Weitere Schritte vor dem eigentlichen Topic Modelling beinhaltet das Aufsetzen der notwendigen Parameter. Dies beinhaltet das Aufsetzen einer Liste an Stoppwörtern, um häufige Wörter ohne inhaltliche Relevanz zu entfernen. Weiter sind die Parameter für das Festlegen eines Seeds für die Reproduktion der Ergebnisse, der Ähnlichkeit der Wörter für Schlüsselbegriffe, und die Verwendung von c-TF-IDF für verbesserte Topic-Repräsentation. Um die Cluster zu identifizieren wird eine intertopic Distanz Map erstellt. In dieser Grafik ist nicht nur die Größe der jeweligen Topics sichtbar, sondern auch die Überschneidungen bzgl. inhaltlicher Nähe. Durch die visualisierte Größe lassen sich zudem repräsentative Topics identifizieren, womit sich die jeweligen Cluster übersichtlich in eigenen Grafiken vergleichen lassen können.</p>
+								<img src="./images/plotz/intertopic-distance-all.png" alt="Intertopic Distance Map vor dem Filtern von den Topics mit Filler-Wörtern">
+								<img src="./images/plotz/intertopic-distance-filtered.png" alt="Intertopic Ditance Map nach dem Ausschluß von Topics bestehend aus Filler-Wörtern">
+								<p>Insgesamt ergeben sich zehn relevante thematische Cluster:</br> - Wald, Tiere (Topic 1; 21; 57)</br> - Fridays for Future, Greta Thunberg (Topic 2; 34; 46; 73)</br> - Strom, Energiewende (Topic 3; 76; 53; 39; 25; 31; 40; 47; 55)</br> - Klimawandel, Temperaturen (Topic 6; 67; 72; 58; 68; 27; 17)</br> - Wasser, Wasserversorgung (Topic 8; 49; 54)</br> - Klimaabkommen, internationale Zusammenarbeit (Topic 10; 18; 64; 36; 70; 50; 78)</br> - Plastik, (Plastik)Müll (Topic 11; 75; 30; 65; 69)</br> - Internationale Politik (Topic 12; 19; 20; 26; 44)</br> - Ernährung, Veganismus/Vegetarismus (Topic 13; 33; 14; 15; 35; 71)</br> - Verkehr, ÖPNV (Topic 16; 32; 62; 28)</br></p>
+							</body>
+						</div>
+					</section>
+					<section id="five">
+						<div class="row">
+							<body>
+								<h3>Topic Modeling über Zeit</h3>
+								<p>Auf Basis der erarbeiteten Cluster werden zuerst die repräsentativen Topics miteinander bzgl. der Häufigkeit über den Untersuchungszeitraum analysiert, um die Veränderung bzgl. des Diskurses zu erkennen. Die relevante Beobachtung ist die Dominanz von Topic 2 und somit des Themenclusters rund um Fridays for Future und damit eingehend die Verdrängung der Themenvielfalt über Umwelt und Klima.</br>Währenddessen besteht auch durch die On-Demand Natur von YouTube-Videos die Möglichkeit, dass Videos eine langlebige Natur besitzen. Dadurch müssen Videos nicht in der direkten Zeit nach der Veröffentlichung konsumiert werden, sondern können über Zeit Views kumulieren. Ein großer Auslöser wie eine Protestbewegung zu dem Thema kann dann besagtes Video (erneute) Relevanz verleihen.</p>
+								<img src="./images/plotz/topicsovertime.png" alt="Topic-Verteilung über Zeit">
+							</body>
+						</div>
+					</section>		
 
 				<!-- Three -->
 					<section id="three">
